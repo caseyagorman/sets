@@ -1,5 +1,5 @@
 """Functions to parse a file containing student data."""
-
+import collections
 
 def unique_houses(filename):
     """TODO: Return a set of student houses.
@@ -94,8 +94,27 @@ def hogwarts_by_house(filename):
     ghosts = []
     instructors = []
 
-    # Code goes here
+    cohort = open(filename, "r")
+    for line in cohort:
+        line = line.rstrip().split("|")
+        last_name = line[1]
+        if line[2] == "Gryffindor":
+            gryffindor.append(last_name)
+        elif line[2] == "Hufflepuff":
+            hufflepuff.append(last_name)
+        elif line[2] == "Ravenclaw":
+            ravenclaw.append(last_name)
+        elif line[2] == "Slytherin":
+            slytherin.append(last_name)
+        elif line[2] == "Dumbledore's Army":
+            dumbledores_army.append(last_name)
+        elif line[4] == "G":
+            ghosts.append(last_name )
+        elif line[4] == "I":
+            instructors.append(last_name )
 
+    all_hogwarts = [dumbledores_army, gryffindor, hufflepuff, ravenclaw, slytherin, ghosts, instructors]
+    all_hogwarts = map(sorted, all_hogwarts)
     return all_hogwarts
 
 
@@ -114,8 +133,16 @@ def all_students_tuple_list(filename):
 
     student_list = []
 
-    # Code goes here
-
+    cohort_data = open(filename, "r")
+    for line in cohort_data:
+        line = line.rstrip().split("|")
+        name = " ".join(line[0:2])
+        if line[4] != "I" and line[4] != "G":
+            house = line[2]
+            teacher = line[3]
+            cohort = line[4]
+            student = (name, house, teacher, cohort)
+            student_list.append(student)
     return student_list
 
 
@@ -160,9 +187,30 @@ def find_name_duplicates(filename):
 
     """
 
-    duplicate_names = set()
+    fall_15 = set()
+    winter_16 = set()
+    spring_16 = set()
+    summer_16 = set()
 
-    # Code goes here
+    cohort_data = open(filename)
+
+    for line in cohort_data:
+        line = line.rstrip()
+        student = line.split("|")
+
+        first_name, last_name, house, advisor, cohort = student
+
+        if cohort == "Fall 2015":
+            fall_15.add(last_name)
+        elif cohort == "Winter 2016":
+            winter_16.add(last_name)
+        elif cohort == "Spring 2016":
+            spring_16.add(last_name)
+        elif cohort == "Summer 2016":
+            summer_16.add(last_name)
+
+    duplicate_names = fall_15 & winter_16 & spring_16 & summer_16
+
 
     return duplicate_names
 
